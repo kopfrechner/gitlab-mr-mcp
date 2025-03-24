@@ -16,12 +16,18 @@ if (!gitlabToken) {
   process.exit(1);
 }
 
-// Initialize GitLab API Client
+// Initialize GitLab project IDs
 const gitlabProjectId = process.env.PR_MCP_GITLAB_PROJECT_ID;
-if (!gitlabToken) {
+if (!gitlabProjectId) {
   console.error("Error: PR_MCP_GITLAB_PROJECT_ID environment variable is not set.");
   process.exit(1);
 }
+
+// Initialize GitLab issues project ID (can be the same or different from the main project)
+const gitlabIssuesProjectId = process.env.PR_MCP_GITLAB_ISSUES_PROJECT_ID || gitlabProjectId; // Fallback to main project if not set
+
+console.error("GitLab Project ID:", gitlabProjectId);
+console.error("GitLab Issues Project ID:", gitlabIssuesProjectId);
 
 const api = new Gitlab({
   token: gitlabToken,
@@ -143,6 +149,23 @@ server.tool(
         : "No diff data available for this merge request.";
       return {
         content: [{ type: "text", text: diffText }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
+  "get_issue_details",
+  {
+    issue_iid: z.string().describe("The internal ID of the issue within the project"),
+  },
+  async ({ issue_iid }) => {
+    try {
+      const issue = await api.Issues.show(issue_iid, { projectId: gitlabIssuesProjectId });
+      return {
+        content: [{ type: "text", text: JSON.stringify(issue, null, 2) }],
       };
     } catch (error) {
       return formatErrorResponse(error);
