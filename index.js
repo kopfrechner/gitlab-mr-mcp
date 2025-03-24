@@ -58,8 +58,6 @@ server.tool(
         description: mr.description,
         state: mr.state,
         url: mr.web_url,
-        target_branch: mr.target_branch,
-        source_branch: mr.source_branch,
       }));
       return {
         content: [{ type: "text", text: JSON.stringify(filteredMergeRequests, null, 2) }],
@@ -74,12 +72,23 @@ server.tool(
   "get_merge_request_details",
   {
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
+    verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
   },
-  async ({ merge_request_iid }) => {
+  async ({ merge_request_iid, verbose }) => {
     try {
       const mr = await api.MergeRequests.show(gitlabProjectId, merge_request_iid);
+      const filteredMr = verbose ? mr : {
+        title: mr.title,
+        description: mr.description,
+        state: mr.state,
+        url: mr.web_url,
+        target_branch: mr.target_branch,
+        source_branch: mr.source_branch,
+        web_url: mr.web_url,
+        diff_refs: mr.diff_refs,
+      };
       return {
-        content: [{ type: "text", text: JSON.stringify(mr, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(filteredMr, null, 2) }],
       };
     } catch (error) {
       return formatErrorResponse(error);
