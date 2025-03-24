@@ -93,6 +93,44 @@ server.tool(
 );
 
 server.tool(
+  "add_merge_request_diff_comment",
+  {
+    merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
+    comment: z.string().describe("The comment text"),
+    base_sha: z.string().describe("The SHA of the base commit"),
+    start_sha: z.string().describe("The SHA of the start commit"),
+    head_sha: z.string().describe("The SHA of the head commit"),
+    file_path: z.string().describe("The path to the file being commented on"),
+    line_number: z.number().describe("The line number in the new version of the file"),
+  },
+  async ({ merge_request_iid, comment, base_sha, start_sha, head_sha, file_path, line_number }) => {
+    try {
+      const discussion = await api.MergeRequestDiscussions.create(
+        gitlabProjectId, 
+        merge_request_iid, 
+        comment,
+        {
+          position: {
+            base_sha: base_sha,
+            start_sha: start_sha,
+            head_sha: head_sha,
+            old_path: file_path,
+            new_path: file_path,
+            position_type: 'text',
+            new_line: line_number,
+          },
+        }
+      );
+      return {
+        content: [{ type: "text", text: JSON.stringify(discussion, null, 2) }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
   "get_merge_request_diff",
   {
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
