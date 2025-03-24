@@ -46,11 +46,23 @@ const server = new McpServer({
 // --- Merge Request Tools ---
 server.tool(
   "list_open_merge_requests",
-  async () => {
+  {
+    verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
+  },
+  async ({ verbose }) => {
     try {
       const mergeRequests = await api.MergeRequests.all({ projectId: gitlabProjectId, state: 'opened' });
+      const filteredMergeRequests = verbose ? mergeRequests : mergeRequests.map(mr => ({
+        iid: mr.iid,
+        title: mr.title,
+        description: mr.description,
+        state: mr.state,
+        url: mr.web_url,
+        target_branch: mr.target_branch,
+        source_branch: mr.source_branch,
+      }));
       return {
-        content: [{ type: "text", text: JSON.stringify(mergeRequests, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(filteredMergeRequests, null, 2) }],
       };
     } catch (error) {
       return formatErrorResponse(error);
