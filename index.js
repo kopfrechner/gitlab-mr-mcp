@@ -85,6 +85,8 @@ server.tool(
         target_branch: mr.target_branch,
         source_branch: mr.source_branch,
         web_url: mr.web_url,
+        merge_status: mr.merge_status,
+        detailed_merge_status: mr.detailed_merge_status,
         diff_refs: mr.diff_refs,
       };
       return {
