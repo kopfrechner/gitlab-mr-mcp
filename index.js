@@ -26,15 +26,10 @@ if (!gitlabProjectId) {
 // Initialize GitLab issues project ID (can be the same or different from the main project)
 const gitlabIssuesProjectId = process.env.PR_MCP_GITLAB_ISSUES_PROJECT_ID || gitlabProjectId; // Fallback to main project if not set
 
-console.error("GitLab Project ID:", gitlabProjectId);
-console.error("GitLab Issues Project ID:", gitlabIssuesProjectId);
-
 const api = new Gitlab({
   token: gitlabToken,
 });
 
-//const mergeRequests = await api.Projects.all();
-//console.error(mergeRequests);
 
 // Helper function to format errors for MCP responses
 const formatErrorResponse = (error) => ({
