@@ -1,0 +1,13 @@
+{
+    "name": "gitlab-review-mcp",
+    "version": "0.1.0",
+    "type": "module",
+    "dependencies": {
+        "@gitbeaker/rest": "^42.1.0",
+        "@modelcontextprotocol/sdk": "^1.7.0",
+        "zod": "^3.22.4"
+    },
+    "scripts": {
+        "start": "node index.js"
+    }
+}
