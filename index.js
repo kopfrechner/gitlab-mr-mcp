@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { Gitlab } from "@gitbeaker/rest";
 import { exec } from "child_process";
 import { promisify } from "util";
-import { number, z } from "zod";
+import { z } from "zod";
 
 
 // Promisify exec for async usage
@@ -155,12 +155,19 @@ server.tool(
   "get_issue_details",
   {
     issue_iid: z.string().describe("The internal ID of the issue within the project"),
+    verbose: z.boolean().default(false).describe("If true, returns the full issue details; if false (default), returns a filtered version"),
   },
-  async ({ issue_iid }) => {
+  async ({ issue_iid, verbose }) => {
     try {
       const issue = await api.Issues.show(issue_iid, { projectId: gitlabIssuesProjectId });
+
+      const filteredIssue = verbose ? issue : {
+        title: issue.title,
+        description: issue.description,
+      };
+
       return {
-        content: [{ type: "text", text: JSON.stringify(issue, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(filteredIssue, null, 2) }],
       };
     } catch (error) {
       return formatErrorResponse(error);
