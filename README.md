@@ -34,8 +34,6 @@ npm install
 
 ```bash
 export PR_MCP_GITLAB_TOKEN=your_gitlab_token
-export PR_MCP_GITLAB_PROJECT_ID=your_project_id
-export PR_MCP_GITLAB_ISSUES_PROJECT_ID=your_issues_project_id  # Optional, defaults to PROJECT_ID
 ```
 
 ### Running the Server
