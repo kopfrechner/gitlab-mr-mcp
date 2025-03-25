@@ -4,6 +4,7 @@ import { Gitlab } from "@gitbeaker/rest";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { z } from "zod";
+import _ from "lodash";
 
 
 // Promisify exec for async usage
@@ -49,7 +50,8 @@ server.tool(
         name: project.name,
         path: project.path,
         path_with_namespace: project.path_with_namespace,
-        web_url: project.web_url,
+        web_url: project.web_url, 
+        default_branch: project.default_branch,
       }));
 
       const projectsText = Array.isArray(filteredProjects) && filteredProjects.length > 0
@@ -124,11 +126,54 @@ server.tool(
 );
 
 server.tool(
+  "get_merge_request_comments",
+  "Get comments from a merge request",
+  {
+    project_id: z.string().describe("The project ID of the merge request"),
+    merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
+    verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
+  },
+  async ({ project_id, merge_request_iid, verbose }) => {
+    try {
+      const discussions = await api.MergeRequestDiscussions.all(project_id, merge_request_iid);
+      
+      if (verbose) {
+        return {
+          content: [{ type: "text", text: JSON.stringify(discussions, null, 2) }],
+        };
+      }
+      
+      const unresolvedNotes = discussions.flatMap(note => note.notes).filter(note => note.resolved === false);
+      const disscussionNotes = unresolvedNotes.filter(note => note.type === "DiscussionNote").map(note => ({
+        id: note.id,
+        noteable_id: note.noteable_id,
+        body: note.body,
+        author_name: note.author.name,
+      }));
+      const diffNotes = unresolvedNotes.filter(note => note.type === "DiffNote").map(note => ({
+        id: note.id,
+        noteable_id: note.noteable_id,
+        body: note.body,
+        author_name: note.author.name,
+        position: note.position,
+      }));
+      return {
+        content: [{ type: "text", text: JSON.stringify({ 
+          discussionNotes: Object.entries(_.groupBy(disscussionNotes, note => note.noteable_id)).map(([noteable_id, notes]) => ({ noteable_id, notes })),
+          diffNotes: Object.entries(_.groupBy(diffNotes, note => note.noteable_id)).map(([noteable_id, notes]) => ({ noteable_id, position: notes[0].position, notes: notes.map(note => _.omit(note, ['position', 'noteable_id'])) }))
+        }, null, 2) }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
   "add_merge_request_comment",
   "Add a comment to a merge request",
   {
     project_id: z.string().describe("The project ID of the merge request"),
-    merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
   },
   async ({ project_id, merge_request_iid, comment }) => {
