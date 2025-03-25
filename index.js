@@ -16,16 +16,6 @@ if (!gitlabToken) {
   process.exit(1);
 }
 
-// Initialize GitLab project IDs
-const gitlabProjectId = process.env.PR_MCP_GITLAB_PROJECT_ID;
-if (!gitlabProjectId) {
-  console.error("Error: PR_MCP_GITLAB_PROJECT_ID environment variable is not set.");
-  process.exit(1);
-}
-
-// Initialize GitLab issues project ID (can be the same or different from the main project)
-const gitlabIssuesProjectId = process.env.PR_MCP_GITLAB_ISSUES_PROJECT_ID || gitlabProjectId; // Fallback to main project if not set
-
 const api = new Gitlab({
   token: gitlabToken,
 });
@@ -45,19 +35,53 @@ const server = new McpServer({
 
 // --- Merge Request Tools ---
 server.tool(
-  "list_open_merge_requests",
+  "get_projects",
+  "Get a list of projects",
   {
-    verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
+    verbose: z.boolean().default(false).describe("If true, returns the full project details; if false (default), returns a filtered version"),
   },
   async ({ verbose }) => {
     try {
-      const mergeRequests = await api.MergeRequests.all({ projectId: gitlabProjectId, state: 'opened' });
+      const projects = await api.Projects.all({ membership: true });
+      const filteredProjects = verbose ? projects : projects.map(project => ({
+        id: project.id,
+        description: project.description,
+        name: project.name,
+        path: project.path,
+        path_with_namespace: project.path_with_namespace,
+        web_url: project.web_url,
+      }));
+
+      const projectsText = Array.isArray(filteredProjects) && filteredProjects.length > 0
+        ? JSON.stringify(filteredProjects, null, 2)
+        : "No projects found.";
+      return {
+        content: [{ type: "text", text: projectsText }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
+  "list_open_merge_requests",
+  "Lists all open merge requests in the project",
+  {
+    project_id: z.string().describe("The project ID of the merge request"),
+    verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
+  },
+  async ({ verbose, project_id }) => {
+    try {
+      const mergeRequests = await api.MergeRequests.all({ projectId: project_id, state: 'opened' });
+
       const filteredMergeRequests = verbose ? mergeRequests : mergeRequests.map(mr => ({
         iid: mr.iid,
+        project_id: mr.project_id,
         title: mr.title,
         description: mr.description,
         state: mr.state,
-        url: mr.web_url,
+        web_url: mr.web_url,
       }));
       return {
         content: [{ type: "text", text: JSON.stringify(filteredMergeRequests, null, 2) }],
@@ -70,21 +94,22 @@ server.tool(
 
 server.tool(
   "get_merge_request_details",
+  "Get details of a specific merge request of a project",
   {
+    project_id: z.string().describe("The project ID of the merge request"),
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
     verbose: z.boolean().default(false).describe("If true, returns the full merge request details; if false (default), returns a filtered version"),
   },
-  async ({ merge_request_iid, verbose }) => {
+  async ({ project_id, merge_request_iid, verbose }) => {
     try {
-      const mr = await api.MergeRequests.show(gitlabProjectId, merge_request_iid);
+      const mr = await api.MergeRequests.show(project_id, merge_request_iid);
       const filteredMr = verbose ? mr : {
         title: mr.title,
         description: mr.description,
         state: mr.state,
-        url: mr.web_url,
+        web_url: mr.web_url,
         target_branch: mr.target_branch,
         source_branch: mr.source_branch,
-        web_url: mr.web_url,
         merge_status: mr.merge_status,
         detailed_merge_status: mr.detailed_merge_status,
         diff_refs: mr.diff_refs,
@@ -100,13 +125,15 @@ server.tool(
 
 server.tool(
   "add_merge_request_comment",
+  "Add a comment to a merge request",
   {
+    project_id: z.string().describe("The project ID of the merge request"),
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
   },
-  async ({ merge_request_iid, comment }) => {
+  async ({ project_id, merge_request_iid, comment }) => {
     try {
-      const note = await api.MergeRequestDiscussions.create(gitlabProjectId, merge_request_iid, comment);
+      const note = await api.MergeRequestDiscussions.create(project_id, merge_request_iid, comment);
       return {
         content: [{ type: "text", text: JSON.stringify(note, null, 2) }],
       };
@@ -118,7 +145,9 @@ server.tool(
 
 server.tool(
   "add_merge_request_diff_comment",
+  "Add a comment to a merge request at a specific line in a file",
   {
+    project_id: z.string().describe("The project ID of the merge request"),
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
     base_sha: z.string().describe("The SHA of the base commit"),
@@ -127,10 +156,10 @@ server.tool(
     file_path: z.string().describe("The path to the file being commented on"),
     line_number: z.number().describe("The line number in the new version of the file"),
   },
-  async ({ merge_request_iid, comment, base_sha, start_sha, head_sha, file_path, line_number }) => {
+  async ({ project_id, merge_request_iid, comment, base_sha, start_sha, head_sha, file_path, line_number }) => {
     try {
       const discussion = await api.MergeRequestDiscussions.create(
-        gitlabProjectId, 
+        project_id, 
         merge_request_iid, 
         comment,
         {
@@ -156,12 +185,14 @@ server.tool(
 
 server.tool(
   "get_merge_request_diff",
+  "Get the diff of a merge request",
   {
+    project_id: z.string().describe("The project ID of the merge request"),
     merge_request_iid: z.string().describe("The internal ID of the merge request within the project"),
   },
-  async ({ merge_request_iid }) => {
+  async ({ project_id, merge_request_iid }) => {
     try {
-      const diff = await api.MergeRequests.allDiffs(gitlabProjectId, merge_request_iid);
+      const diff = await api.MergeRequests.allDiffs(project_id, merge_request_iid);
       const diffText = Array.isArray(diff) && diff.length > 0
         ? JSON.stringify(diff, null, 2)
         : "No diff data available for this merge request.";
@@ -176,13 +207,15 @@ server.tool(
 
 server.tool(
   "get_issue_details",
+  "Get details of a specific issue of a project",
   {
+    project_id: z.string().describe("The project ID of the issue"),
     issue_iid: z.string().describe("The internal ID of the issue within the project"),
     verbose: z.boolean().default(false).describe("If true, returns the full issue details; if false (default), returns a filtered version"),
   },
-  async ({ issue_iid, verbose }) => {
+  async ({ project_id, issue_iid, verbose }) => {
     try {
-      const issue = await api.Issues.show(issue_iid, { projectId: gitlabIssuesProjectId });
+      const issue = await api.Issues.show(issue_iid, { projectId: project_id });
 
       const filteredIssue = verbose ? issue : {
         title: issue.title,
