@@ -1,3 +1,5 @@
+[![smithery badge](https://smithery.ai/badge/@kopfrechner/gitlab-mr-mcp)](https://smithery.ai/server/@kopfrechner/gitlab-mr-mcp)
+
 # GitLab MR MCP
 
 A Model Context Protocol (MCP) server for interacting with GitLab merge requests and issues.
@@ -30,22 +32,19 @@ This project implements a server using the Model Context Protocol (MCP) that all
 npm install
 ```
 
-3. Set up environment variables:
-
-```bash
-export PR_MCP_GITLAB_TOKEN=your_gitlab_token
-```
-
-### Running the Server
-
-```bash
-npm start
-```
-
-For use with MCP clients, you can run:
-
-```bash
-npx -y @modelcontextprotocol/inspector npm start
+3. Add the following to your MCP client configuration:
+```json
+{
+  "mcpServers": {
+    "gitlab-mr-mcp": {
+      "command": "node",
+      "args": ["/path/to/gitlab-mr-mcp/index.js"]
+    }
+    "env": {
+      "MR_MCP_GITLAB_TOKEN": "your_gitlab_token"
+    }
+  }
+}
 ```
 
 ## Available Tools
@@ -193,6 +192,22 @@ Gets detailed information about a specific issue.
     }
   }
 }
+```
+
+## Development
+
+### Running Inspector
+
+Set up environment variables:
+
+```bash
+export MR_MCP_GITLAB_TOKEN=your_gitlab_token
+```
+
+For use with MCP clients, you can run:
+
+```bash
+npx -y @modelcontextprotocol/inspector npm start
 ```
 
 ## Troubleshooting
