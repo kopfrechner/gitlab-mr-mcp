@@ -14,7 +14,6 @@ const execAsync = promisify(exec);
 const gitlabToken = process.env.MR_MCP_GITLAB_TOKEN;
 if (!gitlabToken) {
   console.error("Error: MR_MCP_GITLAB_TOKEN environment variable is not set.");
-  process.exit(1);
 }
 
 const api = new Gitlab({
