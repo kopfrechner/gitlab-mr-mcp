@@ -11,9 +11,9 @@ import _ from "lodash";
 const execAsync = promisify(exec);
 
 // Initialize GitLab API Client
-const gitlabToken = process.env.PR_MCP_GITLAB_TOKEN;
+const gitlabToken = process.env.MR_MCP_GITLAB_TOKEN;
 if (!gitlabToken) {
-  console.error("Error: PR_MCP_GITLAB_TOKEN environment variable is not set.");
+  console.error("Error: MR_MCP_GITLAB_TOKEN environment variable is not set.");
   process.exit(1);
 }
 
