@@ -4,9 +4,9 @@ startCommand:
   configSchema:
     type: object
     required: 
-      - gitlabToken
+      - gitlabMrMcpToken
     properties: 
-      gitlabToken: 
+      gitlabMrMcpToken: 
         type: string
         description: GitLab Access Token
   commandFunction:
@@ -18,6 +18,6 @@ startCommand:
         'index.js'
       ],
       env: {
-        MR_MCP_GITLAB_TOKEN: config.gitlabToken
+        MR_MCP_GITLAB_TOKEN: config.gitlabMrMcpToken
       }
     })
