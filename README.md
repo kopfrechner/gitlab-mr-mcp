@@ -1,4 +1,4 @@
-[![GitHub stars](https://img.shields.io/github/stars/kopfrechner/gitlab-mr-mcp?style=social)](https://github.com/kopfrechner/gitlab-mr-mcp/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/kopfrechner/gitlab-mr-mcp?style=flat)](https://github.com/kopfrechner/gitlab-mr-mcp/stargazers)
 [![License](https://img.shields.io/github/license/kopfrechner/gitlab-mr-mcp)](LICENSE)
 [![smithery badge](https://smithery.ai/badge/@kopfrechner/gitlab-mr-mcp)](https://smithery.ai/server/@kopfrechner/gitlab-mr-mcp)
 
