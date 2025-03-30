@@ -29,7 +29,7 @@ const formatErrorResponse = (error) => ({
 
 // Initialize the MCP server
 const server = new McpServer({
-  name: "GitLabReviewMCP",
+  name: "GitlabMrMCP",
   version: "1.0.0",
 });
 

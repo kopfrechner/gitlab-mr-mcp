@@ -15,15 +15,26 @@ This project implements a server using the Model Context Protocol (MCP) that all
 - Adding line-specific comments to code in merge request diffs
 - Fetching issue details
 
-## Setup
+## Installation
 
-### Prerequisites
+### Using Smithery
+
+Using Smithery
+
+To install GitLab MR MCP for Claude Desktop automatically via Smithery:
+
+```bash
+npx -y @smithery/cli@latest install @kopfrechner/gitlab-mr-mcp --client claude --config '"{\"gitlabMrMcpToken\":\"YOUR_GITLAB_TOKEN\"}"'
+```
+### Manual Installation
+
+#### Prerequisites
 
 - Node.js
 - GitLab access token with API access
 - GitLab project ID(s)
 
-### Installation
+#### Setup
 
 1. Clone this repository
 2. Install dependencies:
@@ -49,150 +60,29 @@ npm install
 
 ## Available Tools
 
-### `get_projects`
-
+* `get_projects`
 Gets a list of GitLab projects accessible with your token.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_projects",
-    "arguments": {
-      "verbose": false
-    }
-  }
-}
-```
-
-### `list_open_merge_requests`
-
+* `list_open_merge_requests`
 Lists all open merge requests in the specified project.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "list_open_merge_requests",
-    "arguments": {
-      "project_id": "12345",
-      "verbose": false
-    }
-  }
-}
-```
-
-### `get_merge_request_details`
-
+* `get_merge_request_details`
 Gets detailed information about a specific merge request.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_merge_request_details",
-    "arguments": {
-      "project_id": "12345",
-      "merge_request_iid": "42",
-      "verbose": false
-    }
-  }
-}
-```
-
-### `get_merge_request_comments`
-
+* `get_merge_request_comments`
 Gets comments from a specific merge request, including discussion notes and diff notes.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_merge_request_comments",
-    "arguments": {
-      "project_id": "12345",
-      "merge_request_iid": "42",
-      "verbose": false
-    }
-  }
-}
-```
-
-### `add_merge_request_comment`
-
+* `add_merge_request_comment`
 Adds a general comment to a merge request.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "add_merge_request_comment",
-    "arguments": {
-      "project_id": "12345",
-      "merge_request_iid": "42",
-      "comment": "This is a comment on the merge request"
-    }
-  }
-}
-```
-
-### `add_merge_request_diff_comment`
-
+* `add_merge_request_diff_comment`
 Adds a comment to a specific line in a file within a merge request.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "add_merge_request_diff_comment",
-    "arguments": {
-      "project_id": "12345",
-      "merge_request_iid": "42",
-      "comment": "This is a comment on a specific line",
-      "base_sha": "abc123",
-      "start_sha": "def456",
-      "head_sha": "ghi789",
-      "file_path": "path/to/file.js",
-      "line_number": 42
-    }
-  }
-}
-```
-
-### `get_merge_request_diff`
-
+* `get_merge_request_diff`
 Gets the diff for a merge request.
 
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_merge_request_diff",
-    "arguments": {
-      "project_id": "12345",
-      "merge_request_iid": "42"
-    }
-  }
-}
-```
-
-### `get_issue_details`
-
+* `get_issue_details`
 Gets detailed information about a specific issue.
-
-```json
-{
-  "method": "tools/call",
-  "params": {
-    "name": "get_issue_details",
-    "arguments": {
-      "project_id": "12345",
-      "issue_iid": "42",
-      "verbose": false
-    }
-  }
-}
-```
 
 ## Development
 
@@ -220,7 +110,7 @@ If you encounter permissions issues (403 Forbidden), check:
 
 ## License
 
-MIT
+[MIT](LICENSE)
 
 ## Contributing
 
