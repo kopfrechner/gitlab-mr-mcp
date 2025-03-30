@@ -1,10 +1,10 @@
 [![smithery badge](https://smithery.ai/badge/@kopfrechner/gitlab-mr-mcp)](https://smithery.ai/server/@kopfrechner/gitlab-mr-mcp)
 
-# GitLab MR MCP
+# 🚀 GitLab MR MCP
 
 A Model Context Protocol (MCP) server for interacting with GitLab merge requests and issues.
 
-## Overview
+## 📌 Overview
 
 This project implements a server using the Model Context Protocol (MCP) that allows AI agents to interact with GitLab repositories. It provides tools for:
 
@@ -15,26 +15,25 @@ This project implements a server using the Model Context Protocol (MCP) that all
 - Adding line-specific comments to code in merge request diffs
 - Fetching issue details
 
-## Installation
+## 📦 Installation
 
-### Using Smithery
-
-Using Smithery
+### ⚡ Using Smithery
 
 To install GitLab MR MCP for Claude Desktop automatically via Smithery:
 
 ```bash
 npx -y @smithery/cli@latest install @kopfrechner/gitlab-mr-mcp --client claude --config '"{\"gitlabMrMcpToken\":\"YOUR_GITLAB_TOKEN\"}"'
 ```
-### Manual Installation
 
-#### Prerequisites
+### 🛠️ Manual Installation
+
+#### 🔧 Prerequisites
 
 - Node.js
 - GitLab access token with API access
 - GitLab project ID(s)
 
-#### Setup
+#### 📖 Setup
 
 1. Clone this repository
 2. Install dependencies:
@@ -58,35 +57,35 @@ npm install
 }
 ```
 
-## Available Tools
+## 🛠️ Available Tools
 
 * `get_projects`
-Gets a list of GitLab projects accessible with your token.
+  Gets a list of GitLab projects accessible with your token.
 
 * `list_open_merge_requests`
-Lists all open merge requests in the specified project.
+  Lists all open merge requests in the specified project.
 
 * `get_merge_request_details`
-Gets detailed information about a specific merge request.
+  Gets detailed information about a specific merge request.
 
 * `get_merge_request_comments`
-Gets comments from a specific merge request, including discussion notes and diff notes.
+  Gets comments from a specific merge request, including discussion notes and diff notes.
 
 * `add_merge_request_comment`
-Adds a general comment to a merge request.
+  Adds a general comment to a merge request.
 
 * `add_merge_request_diff_comment`
-Adds a comment to a specific line in a file within a merge request.
+  Adds a comment to a specific line in a file within a merge request.
 
 * `get_merge_request_diff`
-Gets the diff for a merge request.
+  Gets the diff for a merge request.
 
 * `get_issue_details`
-Gets detailed information about a specific issue.
+  Gets detailed information about a specific issue.
 
-## Development
+## 🏗️ Development
 
-### Running Inspector
+### 🔍 Running Inspector
 
 Set up environment variables:
 
@@ -100,7 +99,7 @@ For use with MCP clients, you can run:
 npx -y @modelcontextprotocol/inspector npm start
 ```
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 If you encounter permissions issues (403 Forbidden), check:
 
@@ -108,10 +107,11 @@ If you encounter permissions issues (403 Forbidden), check:
 2. The token user has proper access to the projects
 3. The project IDs are correct
 
-## License
+## 📜 License
 
 [MIT](LICENSE)
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
