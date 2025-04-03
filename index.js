@@ -173,6 +173,7 @@ server.tool(
   "Add a general comment to a merge request",
   {
     project_id: z.number().describe("The project ID of the merge request"),
+    merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
   },
   async ({ project_id, merge_request_iid, comment }) => {
