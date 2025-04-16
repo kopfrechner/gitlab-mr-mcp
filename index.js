@@ -158,8 +158,8 @@ server.tool(
       }));
       return {
         content: [{ type: "text", text: JSON.stringify({ 
-          discussionNotes: Object.entries(_.groupBy(disscussionNotes, note => note.noteable_id)).map(([noteable_id, notes]) => ({ noteable_id, notes })),
-          diffNotes: Object.entries(_.groupBy(diffNotes, note => note.noteable_id)).map(([noteable_id, notes]) => ({ noteable_id, position: notes[0].position, notes: notes.map(note => _.omit(note, ['position', 'noteable_id'])) }))
+          disscussionNotes,
+          diffNotes
         }, null, 2) }],
       };
     } catch (error) {
