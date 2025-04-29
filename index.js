@@ -17,6 +17,7 @@ if (!gitlabToken) {
 }
 
 const api = new Gitlab({
+  host: process.env.MR_MCP_GITLAB_HOST,
   token: gitlabToken,
 });
 
