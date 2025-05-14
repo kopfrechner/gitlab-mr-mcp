@@ -52,11 +52,11 @@ npm install
   "mcpServers": {
     "gitlab-mr-mcp": {
       "command": "node",
-      "args": ["/path/to/gitlab-mr-mcp/index.js"]
-    }
-    "env": {
-      "MR_MCP_GITLAB_TOKEN": "your_gitlab_token",
-      "MR_MCP_GITLAB_HOST": "your_gitlab_host"
+      "args": ["/path/to/gitlab-mr-mcp/index.js"],
+      "env": {
+        "MR_MCP_GITLAB_TOKEN": "your_gitlab_token",
+        "MR_MCP_GITLAB_HOST": "your_gitlab_host"
+      }
     }
   }
 }
