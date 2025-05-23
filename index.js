@@ -200,7 +200,7 @@ server.tool(
     start_sha: z.string().describe("The SHA of the start commit"),
     head_sha: z.string().describe("The SHA of the head commit"),
     file_path: z.string().describe("The path to the file being commented on"),
-    line_number: z.number().describe("The line number in the new version of the file"),
+    line_number: z.string().describe("The line number in the new version of the file"),
   },
   async ({ project_id, merge_request_iid, comment, base_sha, start_sha, head_sha, file_path, line_number }) => {
     try {
