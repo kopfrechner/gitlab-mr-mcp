@@ -43,7 +43,11 @@ server.tool(
   },
   async ({ verbose }) => {
     try {
-      const projects = await api.Projects.all({ membership: true });
+      const projectFilter = {
+        ...(process.env.MR_MCP_MIN_ACCESS_LEVEL ? { minAccessLevel: parseInt(process.env.MR_MCP_MIN_ACCESS_LEVEL, 10) } : {}),
+        ...(process.env.MR_MCP_PROJECT_SEARCH_TERM ? { search: process.env.MR_MCP_PROJECT_SEARCH_TERM } : {}),
+      }
+      const projects = await api.Projects.all({ membership: true, ...projectFilter });
       const filteredProjects = verbose ? projects : projects.map(project => ({
         id: project.id,
         description: project.description,
@@ -270,6 +274,46 @@ server.tool(
 
       return {
         content: [{ type: "text", text: JSON.stringify(filteredIssue, null, 2) }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
+  "set_merge_request_description",
+  "Set the description of a merge request",
+  {
+    project_id: z.number().describe("The project ID of the merge request"),
+    merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
+    description: z.string().describe("The description text"),
+  },
+  async ({ project_id, merge_request_iid, description }) => {
+    try {
+      const mr = await api.MergeRequests.edit( project_id, merge_request_iid, { description });
+      return {
+        content: [{ type: "text", text: JSON.stringify(mr, null, 2) }],
+      };
+    } catch (error) {
+      return formatErrorResponse(error);
+    }
+  }
+);
+
+server.tool(
+  "set_merge_request_title",
+  "Set the title of a merge request",
+  {
+    project_id: z.number().describe("The project ID of the merge request"),
+    merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
+    title: z.string().describe("The title of the merge request"),
+  },
+  async ({ project_id, merge_request_iid, title }) => {
+    try {
+      const mr = await api.MergeRequests.edit( project_id, merge_request_iid, { title });
+      return {
+        content: [{ type: "text", text: JSON.stringify(mr, null, 2) }],
       };
     } catch (error) {
       return formatErrorResponse(error);
