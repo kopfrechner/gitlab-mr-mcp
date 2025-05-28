@@ -18,6 +18,7 @@ This project implements a server using the Model Context Protocol (MCP) that all
 - Adding comments to merge requests
 - Adding line-specific comments to code in merge request diffs
 - Fetching issue details
+- Setting merge request title and description
 
 ## 📦 Installation
 
@@ -88,6 +89,12 @@ npm install
 * `get_issue_details`
   Gets detailed information about a specific issue.
 
+* `set_merge_request_title`
+  Set the title of a merge request
+
+* `set_merge_request_description`
+  Set the description of a merge request
+
 ## 🏗️ Development
 
 ### 🔍 Running Inspector
@@ -97,6 +104,12 @@ Set up environment variables:
 ```bash
 export MR_MCP_GITLAB_TOKEN=your_gitlab_token
 export MR_MCP_GITLAB_HOST=your_gitlab_host
+
+# Optional evn vars to filter the projects the `get_projects` tool has access to:
+# https://docs.gitlab.com/api/access_requests/#valid-access-levels
+export MR_MCP_MIN_ACCESS_LEVEL=min_access_level
+# Search term that should match the project path or name 
+export MR_MCP_PROJECT_SEARCH_TERM=term 
 ```
 
 For use with MCP clients, you can run:
