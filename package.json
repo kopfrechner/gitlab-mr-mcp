@@ -4,7 +4,7 @@
     "type": "module",
     "dependencies": {
         "@gitbeaker/rest": "^42.5.0",
-        "@modelcontextprotocol/sdk": "^1.13.1",
+        "@modelcontextprotocol/sdk": "^1.15.0",
         "lodash": "^4.17.21",
         "zod": "^3.25.67"
     },
