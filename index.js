@@ -38,9 +38,9 @@ const server = new McpServer({
 server.tool(
   "get_projects",
   "Get a list of projects with id, name, description, web_url and other useful information.",
-  {
+  z.object({
     verbose: z.boolean().default(false).describe("By default a filtered version is returned, suitable for most cases. Only set true if more information is needed."),
-  },
+  }),
   async ({ verbose }) => {
     try {
       const projectFilter = {
@@ -73,10 +73,10 @@ server.tool(
 server.tool(
   "list_open_merge_requests",
   "Lists all open merge requests in the project",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     verbose: z.boolean().default(false).describe("By default a filtered version is returned, suitable for most cases. Only set true if more information is needed."),
-  },
+  }),
   async ({ verbose, project_id }) => {
     try {
       const mergeRequests = await api.MergeRequests.all({ projectId: project_id, state: 'opened' });
@@ -101,11 +101,11 @@ server.tool(
 server.tool(
   "get_merge_request_details",
   "Get details about a specific merge request of a project like title, source-branch, target-branch, web_url, ...",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     verbose: z.boolean().default(false).describe("By default a filtered version is returned, suitable for most cases. Only set true if more information is needed."),
-  },
+  }),
   async ({ project_id, merge_request_iid, verbose }) => {
     try {
       const mr = await api.MergeRequests.show(project_id, merge_request_iid);
@@ -132,11 +132,11 @@ server.tool(
 server.tool(
   "get_merge_request_comments",
   "Get general and file diff comments of a certain merge request",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     verbose: z.boolean().default(false).describe("By default a filtered version is returned, suitable for most cases. Only set true if more information is needed."),
-  },
+  }),
   async ({ project_id, merge_request_iid, verbose }) => {
     try {
       const discussions = await api.MergeRequestDiscussions.all(project_id, merge_request_iid);
@@ -176,11 +176,11 @@ server.tool(
 server.tool(
   "add_merge_request_comment",
   "Add a general comment to a merge request",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
-  },
+  }),
   async ({ project_id, merge_request_iid, comment }) => {
     try {
       const note = await api.MergeRequestDiscussions.create(project_id, merge_request_iid, comment);
@@ -196,7 +196,7 @@ server.tool(
 server.tool(
   "add_merge_request_diff_comment",
   "Add a comment of a merge request at a specific line in a file diff",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     comment: z.string().describe("The comment text"),
@@ -205,7 +205,7 @@ server.tool(
     head_sha: z.string().describe("The SHA of the head commit"),
     file_path: z.string().describe("The path to the file being commented on"),
     line_number: z.string().describe("The line number in the new version of the file"),
-  },
+  }),
   async ({ project_id, merge_request_iid, comment, base_sha, start_sha, head_sha, file_path, line_number }) => {
     try {
       const discussion = await api.MergeRequestDiscussions.create(
@@ -236,10 +236,10 @@ server.tool(
 server.tool(
   "get_merge_request_diff",
   "Get the file diffs of a certain merge request",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
-  },
+  }),
   async ({ project_id, merge_request_iid }) => {
     try {
       const diff = await api.MergeRequests.allDiffs(project_id, merge_request_iid);
@@ -258,11 +258,11 @@ server.tool(
 server.tool(
   "get_issue_details",
   "Get details of an issue within a certain project",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the issue"),
     issue_iid: z.number().describe("The internal ID of the issue within the project"),
     verbose: z.boolean().default(false).describe("By default a filtered version is returned, suitable for most cases. Only set true if more information is needed."),
-  },
+  }),
   async ({ project_id, issue_iid, verbose }) => {
     try {
       const issue = await api.Issues.show(issue_iid, { projectId: project_id });
@@ -284,11 +284,11 @@ server.tool(
 server.tool(
   "set_merge_request_description",
   "Set the description of a merge request",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     description: z.string().describe("The description text"),
-  },
+  }),
   async ({ project_id, merge_request_iid, description }) => {
     try {
       const mr = await api.MergeRequests.edit( project_id, merge_request_iid, { description });
@@ -304,11 +304,11 @@ server.tool(
 server.tool(
   "set_merge_request_title",
   "Set the title of a merge request",
-  {
+  z.object({
     project_id: z.number().describe("The project ID of the merge request"),
     merge_request_iid: z.number().describe("The internal ID of the merge request within the project"),
     title: z.string().describe("The title of the merge request"),
-  },
+  }),
   async ({ project_id, merge_request_iid, title }) => {
     try {
       const mr = await api.MergeRequests.edit( project_id, merge_request_iid, { title });
