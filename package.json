@@ -6,7 +6,7 @@
         "@gitbeaker/rest": "^43.4.0",
         "@modelcontextprotocol/sdk": "^1.17.2",
         "lodash": "^4.17.21",
-        "zod": "^4.0.16"
+        "zod": "^4.0.17"
     },
     "scripts": {
         "start": "node index.js"
