@@ -105,7 +105,7 @@ Set up environment variables:
 export MR_MCP_GITLAB_TOKEN=your_gitlab_token
 export MR_MCP_GITLAB_HOST=your_gitlab_host
 
-# Optional evn vars to filter the projects the `get_projects` tool has access to:
+# Optional env vars to filter the projects the `get_projects` tool has access to:
 # https://docs.gitlab.com/api/access_requests/#valid-access-levels
 export MR_MCP_MIN_ACCESS_LEVEL=min_access_level
 # Search term that should match the project path or name 
