@@ -9,6 +9,10 @@
         "zod": "^4.0.17"
     },
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
     }
 }
