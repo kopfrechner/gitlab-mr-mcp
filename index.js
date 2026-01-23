@@ -321,8 +321,9 @@ server.tool(
   }
 );
 
+
 // Connect the server to a transport and start it
-(async () => {
+async function runServer() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
@@ -330,4 +331,12 @@ server.tool(
     console.error("Failed to start server:", error.message);
     process.exit(1);
   }
-})();
+}
+
+// Only run the server if this file is the main module
+const isMainModule = process.argv[1] === new URL(import.meta.url).pathname;
+if (isMainModule) {
+  runServer();
+}
+
+export { server, api };
