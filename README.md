@@ -134,3 +134,8 @@ If you encounter permissions issues (403 Forbidden), check:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/kopfrechner-gitlab-mr-mcp).
+
