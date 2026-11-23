@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "type": "module",
     "dependencies": {
-        "@gitbeaker/rest": "^44.0.5",
+        "@gitbeaker/rest": "^44.1.8",
         "@modelcontextprotocol/sdk": "^1.32.2",
         "lodash": "^4.18.1",
         "zod": "^4.6.7"
